@@ -1,4 +1,5 @@
 # Based from https://github.com/abelfodil/inf1900-grader/blob/master/src/models/mail.py
+import os
 import smtplib
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -6,7 +7,7 @@ from email.mime.text import MIMEText
 
 from validate_email import validate_email
 
-from constants import CORRECTOR_MAIL_USERNAME, CORRECTOR_MAIL_PASSWORD, NUMERO_TP
+from constants import CORRECTOR_MAIL_USERNAME, CORRECTOR_MAIL_PASSWORD, CODE_ASSIGNMENT
 
 class MailAttachment:
     def __init__(self, type_, path: str, filename: str):
@@ -25,7 +26,7 @@ class MailAttachment:
 def create_message(team_number: str)-> str: 
     return f"""Salut équipe {team_number} ! 
 
-Joint à ce fichier, voici la correction de votre {NUMERO_TP}, il se trouve dans le même format que les README des différents travaux que vous avez eu. 
+Joint à ce fichier, voici la correction de votre {CODE_ASSIGNMENT}, il se trouve dans le même format que les README des différents travaux que vous avez eu. 
 Si vous souhaitez une recorrection ou un éclaircissement de votre note, je vous invite à m'écrire sur Discord, de répondre à ce courriel ou de venir me voir durant les heures de cours !
 
 Bonne journée ! 
@@ -41,8 +42,12 @@ def build_mail(sender: str, receiver: list[str], subject: str, message: str, att
     email.attach(MIMEText(message))
 
     for attachment in attachments: 
-        email.attach(attachment.to_MIME())
-
+        try: 
+            os.stat(attachment.path)
+            email.attach(attachment.to_MIME())
+        except Exception: 
+            print(f"Attachment {attachment.path} not found")
+            continue
     return email
 
 def send_mails(messages: list[MIMEMultipart], smtp_addr: str = "smtp.polymtl.ca", port: int = 587):
