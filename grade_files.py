@@ -2,16 +2,16 @@ import os
 import re
 import shutil 
 
-from constants import OUTPUT_FOLDER, NUMERO_TP, GRADING_FOLDER
+from constants import OUTPUT_FOLDER, CODE_ASSIGNMENT, GRADING_FOLDER
 
 def get_grade_file(grading_directory: str, team_folder: str) -> tuple[str, str]: 
     team_number = team_folder.split("_")[0]
     team_path = os.path.join(grading_directory, team_folder)
 
     for file in os.listdir(team_path): 
-        if file.endswith("grading.md"):
+        if file.endswith("correction.md"):
             return team_number, f"{team_path}/{file}"
-    raise FileNotFoundError(f"Unable to find grading.md file in {team_path}")
+    raise FileNotFoundError(f"Unable to find correction/grading.md file in {team_path}")
 
 def copy_grade_file(grade_file_path: str, destination: str):
     if OUTPUT_FOLDER not in os.listdir():
@@ -29,7 +29,7 @@ def extract_grade_from_file(grade_file_path: str):
             if match: 
                 grade_line = line
 
-    return float(grade_line.split("|")[2].replace(",", "."))
+    return float(grade_line.split("|")[3].replace(",", "."))
 
 def extract_grade_files(): 
     for directory in os.listdir(GRADING_FOLDER):
@@ -37,6 +37,6 @@ def extract_grade_files():
         if not directory.startswith(".") and os.path.isdir(f"{GRADING_FOLDER}/{directory}"):
 
             team_number, grade_file_path = get_grade_file(GRADING_FOLDER, directory)
-            destination = f"{OUTPUT_FOLDER}/{NUMERO_TP}-{team_number}.md"
+            destination = f"{OUTPUT_FOLDER}/{CODE_ASSIGNMENT}-{team_number}.md"
             if not os.path.exists(destination):
                 copy_grade_file(grade_file_path, destination)

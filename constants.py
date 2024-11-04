@@ -14,6 +14,9 @@ CODE_ASSIGNMENT = load_env_variable("CODE_ASSIGNMENT")
 SECTION_NUMBER = load_env_variable("NUMERO_SECTION")
 OUTPUT_FOLDER = f"./results/{CODE_ASSIGNMENT}-results"
 
+TOTAL_SECTION_NUMBER = int(load_env_variable("TOTAL_SECTION_NUMBER"))
+
+
 GRADING_FOLDER = load_env_variable("GRADING_FOLDER")
 
 ASSIGNMENT_DATA_FOLDER = load_env_variable("ASSIGNMENT_DATA_FOLDER")
