@@ -2,6 +2,3 @@
 *.csv
 __pycache__
 output
-results/*
-template/*
-data/*
