@@ -1,6 +1,6 @@
 import students
 import grade_files
-import prepare_files
+import prepare_projects
 from constants import STUDENTS_CSV_FILENAME, GRADING_FOLDER, ASSIGNMENT_DATA_FOLDER, CODE_ASSIGNMENT
 
 import argparse
@@ -16,23 +16,21 @@ if __name__ == "__main__":
 
     students_data = students.StudentsData(STUDENTS_CSV_FILENAME)
 
-    if args.zip:
-        raise NotImplementedError("Unzip is not implemented")
-        # TODO: DO
-        # prepare_files.unzip_moodle_archive()
+
+    # if args.zip:
+    #     raise NotImplementedError("Unzip is not implemented")
+    #     # TODO: DO
+    #     # prepare_projects.unzip_moodle_archive()
 
     if args.prepare: 
         if args.filter: 
-            if CODE_ASSIGNMENT.startswith("TP"):
-                prepare_files.filter_tps(GRADING_FOLDER)
-            elif CODE_ASSIGNMENT.startswith("PR"):
-                prepare_files.filter_projects(GRADING_FOLDER, students_data.data["Matricule"].to_list())
-        prepare_files.unzip_files(GRADING_FOLDER)
-        prepare_files.copy_grading_file(GRADING_FOLDER, f"./{ASSIGNMENT_DATA_FOLDER}/correction.md")
-        prepare_files.copy_vscode_config(GRADING_FOLDER, "./.vscode")
+            prepare_projects.filter_projects(GRADING_FOLDER, students_data.matricules)
+        prepare_projects.copy_data_files(GRADING_FOLDER, "./data/projet1_data/tests.py")
+        prepare_projects.copy_grading_file(GRADING_FOLDER, f"./{ASSIGNMENT_DATA_FOLDER}/correction.md")
+        prepare_projects.copy_vscode_config(GRADING_FOLDER, "./.vscode")
 
     if args.grade: 
-        grade_files.extract_grade_files()    
+        grade_files.extract_grade_files(students_data.data)    
         students_data.populate_students_grade()
         students_data.send_mail_groups(args.send)
         students_data.save_csv()

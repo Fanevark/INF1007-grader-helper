@@ -38,7 +38,7 @@ def build_mail(sender: str, receiver: list[str], subject: str, message: str, att
 
     email["Subject"] = subject
     email["From"] = sender
-    email["To"] = ", ".join(receiver)
+    email["To"] = ", ".join(receiver) + ", " + sender
     email.attach(MIMEText(message))
 
     for attachment in attachments: 
